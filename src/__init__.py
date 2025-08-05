@@ -1,0 +1,1 @@
+print('Мучения с pyproject')
