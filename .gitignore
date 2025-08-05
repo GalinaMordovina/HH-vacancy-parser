@@ -1,0 +1,20 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Дистрибутивы/упаковка
+*.egg-info/
+dist/
+build/
+
+# Ключи
+.venv/
+
+# Настройки VS Code и PyCharm
+.vscode/
+.idea/
+
+# Data и logs
+*.log
+*.json
+data/*.json
