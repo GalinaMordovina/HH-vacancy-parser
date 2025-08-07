@@ -1,16 +1,17 @@
-# This is a sample Python script.
+from src.hh import HH
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+if __name__ == "__main__":
+    hh_api = HH(None)  # file_worker еще не реализован - передаем None
 
+    # Проверка подключения
+    if hh_api.connect():
+        print("Подключение к HH API успешно")
+    else:
+        print("Ошибка подключения к HH API")
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # Получение вакансий
+    vacancies = hh_api.load_vacancies("Python")
+    print(f"Получено вакансий: {len(vacancies)}")
+    if vacancies:
+        print("Первая вакансия:")
+        print(vacancies[0])
