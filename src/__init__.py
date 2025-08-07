@@ -1,1 +1,0 @@
-print('Мучения с pyproject')
