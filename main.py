@@ -1,31 +1,29 @@
-from src.vacancy import Vacancy
+from src.hh import HH
 from src.vacancy_saver import JSONSaver
+from src.view import user_interaction
+import logging
 
 
 def main():
-    filename = "data/vacancies.json"  # файл для хранения вакансий
-    saver = JSONSaver(filename)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)s %(message)s',
+        handlers=[logging.StreamHandler()]  # Логи выводятся в консоль
+    )
 
-    # Создаем несколько вакансий
-    vacancy1 = Vacancy("Python Developer", "https://hh.ru/vacancy/1", 100000, "Разработка на Python")
-    vacancy2 = Vacancy("Java Developer", "https://hh.ru/vacancy/2", 120000, "Разработка на Java")
+    # Инициализация объектов API и сохранения
+    hh_api = HH()  # Пока file_worker=None, можно доработать
+    saver = JSONSaver("data/vacancies.json")
 
-    # Добавляем вакансии
-    saver.add(vacancy1)
-    saver.add(vacancy2)
+    print("Подключение к HH API...")
+    connected = hh_api.connect()
+    if connected:
+        print("Подключение к HH API успешно.")
+    else:
+        print("Не удалось подключиться к HH API. Проверьте соединение.")
 
-    print("Все вакансии после добавления:")
-    all_vacancies = saver.get({})
-    for vac in all_vacancies:
-        print(vac)
-
-    # Удаляем одну вакансию
-    saver.delete(vacancy1)
-
-    print("\nВсе вакансии после удаления Python Developer:")
-    remaining = saver.get({})
-    for vac in remaining:
-        print(vac)
+    # Запускаем взаимодействие с пользователем
+    user_interaction(hh_api, saver)
 
 
 if __name__ == "__main__":

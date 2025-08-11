@@ -1,17 +1,19 @@
-import sys
 from src.hh import HH
-from pathlib import Path
-
-sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 
 def test_connect():
-    hh = HH(None)  # передаем None или заглушку, если file_worker не нужен
-    assert hh.connect() is True or hh.connect() is False  # проверяем, что метод не падает
+    hh = HH()  # Передаем None, если file_worker нет
+    result = hh.connect()
+    # connect возвращает либо True, либо False
+    assert result is True or result is False
+
 
 def test_load_vacancies():
     hh = HH(None)
     vacancies = hh.load_vacancies("Python")
+    # Проверяем, что вернулся список
     assert isinstance(vacancies, list)
-    if vacancies:  # если список не пустой
-        assert "name" in vacancies[0] or "id" in vacancies[0]  # пример проверки ключей в словаре вакансии
+    # Если список не пустой, проверим, что первый элемент — словарь с ключом 'name' или 'id'
+    if vacancies:
+        assert isinstance(vacancies[0], dict)
+        assert "name" in vacancies[0] or "id" in vacancies[0]

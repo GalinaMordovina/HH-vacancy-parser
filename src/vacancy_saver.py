@@ -1,8 +1,11 @@
 import json
+import logging
 from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
 from src.vacancy import Vacancy
+
+logger = logging.getLogger(__name__)  # создаём логгер для модуля
 
 
 class VacancySaver(ABC):
@@ -50,10 +53,12 @@ class JSONSaver(VacancySaver):
                 data = json.load(f)
                 # Проверяем, что данные - это список, иначе возвращаем пустой список
                 if not isinstance(data, list):
+                    logger.warning(f"Данные в {self._filename} не являются списком. Возвращаем пустой список.")
                     return []
                 return data
             except json.JSONDecodeError:
                 # При ошибке чтения JSON возвращаем пустой список
+                logger.error(f"Ошибка чтения JSON из файла {self._filename}. Возвращаем пустой список.")
                 return []
 
     def _save_file(self, data: List[Dict[str, Any]]) -> None:
@@ -63,6 +68,7 @@ class JSONSaver(VacancySaver):
         with open(self._filename, "w", encoding="utf-8") as f:
             # Записываем данные с отступами для удобства чтения
             json.dump(data, f, ensure_ascii=False, indent=4)
+        logger.info(f"Файл {self._filename} успешно сохранён. Всего вакансий: {len(data)}")
 
     def add(self, vacancy: Vacancy) -> None:
         """
@@ -81,6 +87,9 @@ class JSONSaver(VacancySaver):
             })
             # Сохраняем обновленный список в файл
             self._save_file(data)
+            logger.info(f"Добавлена вакансия: {vacancy.title}")
+        else:
+            logger.info(f"Вакансия с url {vacancy.url} уже существует. Добавление пропущено.")
 
     def get(self, criteria: Dict[str, Any]) -> List[Vacancy]:
         """
@@ -94,7 +103,7 @@ class JSONSaver(VacancySaver):
             if all(v.get(k) == val for k, val in criteria.items()):
                 # Создаем объект Vacancy из данных словаря
                 results.append(Vacancy(v["title"], v["url"], v["salary"], v["description"]))
-
+        logger.info(f"Получено {len(results)} вакансий по критериям: {criteria}")
         return results
 
     def delete(self, vacancy: Vacancy) -> None:
@@ -102,6 +111,8 @@ class JSONSaver(VacancySaver):
         Удаление вакансии из файла по её уникальному url.
         """
         data = self._load_file()
+        original_len = len(data)
         # Отфильтровываем список, исключая вакансию с заданным url
         data = [v for v in data if v["url"] != vacancy.url]
         self._save_file(data)
+        logger.info(f"Удалено вакансий: {original_len - len(data)} с url: {vacancy.url}")
