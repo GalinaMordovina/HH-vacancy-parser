@@ -1,6 +1,7 @@
 import json
 import csv
 
+
 def export_to_json(vacancies, filename="vacancies_export.json"):
     """
     Экспорт списка вакансий в JSON-файл.

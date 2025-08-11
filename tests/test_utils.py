@@ -4,12 +4,14 @@ import pytest
 from src.utils import export_to_json, export_to_csv
 from src.vacancy import Vacancy
 
+
 @pytest.fixture
 def sample_vacancies():
     return [
         Vacancy("Dev 1", "http://url1", 100000, "desc 1"),
         Vacancy("Dev 2", "http://url2", 200000, "desc 2"),
     ]
+
 
 def test_export_to_json(tmp_path, sample_vacancies):
     file = tmp_path / "vacancies.json"
@@ -21,6 +23,7 @@ def test_export_to_json(tmp_path, sample_vacancies):
     assert isinstance(data, list)
     assert data[0]["title"] == "Dev 1"
     assert data[1]["salary"] == 200000
+
 
 def test_export_to_csv(tmp_path, sample_vacancies):
     file = tmp_path / "vacancies.csv"

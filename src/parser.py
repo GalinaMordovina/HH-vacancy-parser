@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Parser(ABC):
     """
     Абстрактный класс для работы с API сервисов вакансий.

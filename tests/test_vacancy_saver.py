@@ -2,6 +2,7 @@ import pytest
 from src.vacancy_saver import VacancySaver, JSONSaver
 from src.vacancy import Vacancy
 
+
 def test_cannot_instantiate_abstract_class():
     with pytest.raises(TypeError):
         VacancySaver()  # Попытка создать экземпляр абстрактного класса должна вызвать TypeError

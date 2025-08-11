@@ -1,5 +1,6 @@
 from src.view import user_interaction
 
+
 class DummyAPI:
     @staticmethod
     def load_vacancies(keyword):
@@ -10,11 +11,15 @@ class DummyAPI:
             {"name": "Junior Python Developer", "alternate_url": "http://example.com/2", "salary": 50000, "snippet": {"requirement": "Python"}},
         ]
 
+
 class DummySaver:
+
     def __init__(self):
         self.saved = []
+
     def add(self, vacancy):
         self.saved.append(vacancy)
+
 
 def test_user_interaction(monkeypatch):
     inputs = iter([

@@ -1,5 +1,6 @@
 from src.vacancy import Vacancy  # поправь путь, если по-другому
 
+
 def test_validate_salary():
     # Проверка на разные варианты зарплаты
     assert Vacancy._validate_salary(None) == 0
@@ -8,6 +9,7 @@ def test_validate_salary():
     assert Vacancy._validate_salary('100000') == 100000
     assert Vacancy._validate_salary(50000) == 50000
     assert Vacancy._validate_salary('invalid') == 0
+
 
 def test_vacancy_comparison():
     v1 = Vacancy("Job1", "url1", 50000, "desc1")
@@ -18,6 +20,7 @@ def test_vacancy_comparison():
     assert not v2 < v1
     assert v1 == v3
     assert v1 != v2
+
 
 def test_repr():
     v = Vacancy("Job1", "url1", 100000, "desc")
