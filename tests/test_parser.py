@@ -22,3 +22,8 @@ def test_dummy_parser_methods():
     vacancies = dp.load_vacancies("python")
     assert isinstance(vacancies, list)
     assert vacancies[0]["keyword"] == "python"
+
+
+def test_dummy_parser_file_worker():
+    dp = DummyParser(file_worker="file.txt")
+    assert dp.file_worker == "file.txt"

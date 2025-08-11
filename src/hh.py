@@ -4,16 +4,15 @@ from src.parser import Parser
 
 class HH(Parser):
     """
-    Класс для работы с API HeadHunter
-    Класс Parser является родительским классом, который вам необходимо реализовать
+    Дочерний класс для работы с API HeadHunter
     """
 
-    def __init__(self, file_worker):
+    def __init__(self, file_worker=None):
         self.url = 'https://api.hh.ru/vacancies'
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.params = {'text': '', 'page': 0, 'per_page': 100}
         self.vacancies = []
-        super().__init__()  # без аргументов
+        super().__init__(file_worker)  # Передаём file_worker родителю
 
     def connect(self):
         try:
@@ -22,13 +21,27 @@ class HH(Parser):
         except requests.RequestException:
             return False
 
-    def load_vacancies(self, keyword):
+    def load_vacancies(self, keyword: str) -> list:
         self.params['text'] = keyword
-        self.vacancies = []  # Очистить список вакансий перед загрузкой
         self.params['page'] = 0
-        while self.params.get('page') != 20:
-            response = requests.get(self.url, headers=self.headers, params=self.params)
-            vacancies = response.json()['items']
-            self.vacancies.extend(vacancies)
-            self.params['page'] += 1
-        return self.vacancies  # добавить return!
+        self.vacancies = []
+        max_pages = 20  # ограничение по количеству страниц
+
+        while self.params['page'] < max_pages:
+            try:
+                response = requests.get(self.url, headers=self.headers, params=self.params)
+                if response.status_code != 200:
+                    raise RuntimeError(f"Ошибка запроса: {response.status_code} - {response.reason}")
+
+                data = response.json()
+                vacancies_page = data.get('items', [])
+                if not vacancies_page:
+                    break  # больше страниц нет
+
+                self.vacancies.extend(vacancies_page)
+                self.params['page'] += 1
+
+            except requests.RequestException as e:
+                raise RuntimeError(f"Ошибка подключения к API: {e}")
+
+        return self.vacancies
