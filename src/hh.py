@@ -15,6 +15,9 @@ class HH(Parser):
         super().__init__(file_worker)  # Передаём file_worker родителю
 
     def connect(self):
+        """
+        Проверяет соединение с API HeadHunter
+        """
         try:
             response = requests.get(self.url, headers=self.headers, params={'text': '', 'per_page': 1})
             return response.status_code == 200
@@ -22,6 +25,9 @@ class HH(Parser):
             return False
 
     def load_vacancies(self, keyword: str) -> list:
+        """
+        Загружает вакансии по заданному ключевому слову и возвращает список вакансий.
+        """
         self.params['text'] = keyword
         self.params['page'] = 0
         self.vacancies = []

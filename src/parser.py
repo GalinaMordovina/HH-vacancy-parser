@@ -3,8 +3,7 @@ from abc import ABC, abstractmethod
 
 class Parser(ABC):
     """
-    Абстрактный класс для работы с API сервисов вакансий.
-    (Все классы, работающие с API, наследуют этот класс)
+    Абстрактный родительский класс для работы с API сервисов вакансий.
     """
 
     def __init__(self, file_worker=None):

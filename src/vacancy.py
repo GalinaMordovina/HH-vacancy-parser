@@ -1,7 +1,6 @@
 class Vacancy:
     """
     Класс для представления вакансии.
-    Поддерживает сравнение вакансий по зарплате.
     """
 
     __slots__ = ('title', 'url', 'salary', 'description')  # Оптимизация памяти
@@ -46,3 +45,21 @@ class Vacancy:
         """
         return (f"Vacancy(title={self.title!r}, url={self.url!r}, "
                 f"salary={self.salary}, description={self.description!r})")  # исправлено с name на title
+
+    def __str__(self):
+        """
+        Представление вакансии (учим вакансию саму себя выводить).
+        """
+        return f"Название: {self.title}\nСсылка: {self.url}\nЗарплата: {self.salary}\nОписание: {self.description}"
+
+    def to_dict(self):
+        """
+        Преобразует объект Vacancy в словарь (возможность класса самому себя выводить).
+        """
+
+        return {
+            "title": self.title,
+            "url": self.url,
+            "salary": self.salary,
+            "description": self.description
+        }

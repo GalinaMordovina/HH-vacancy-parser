@@ -14,9 +14,9 @@ class VacancySaver(ABC):
     """
 
     @abstractmethod
-    def add(self, vacancy: Vacancy) -> None:
+    def add(self, vacancies: list[Vacancy]) -> None:  # последовательность вакансий
         """
-        Добавить вакансию в хранилище.
+        Добавить вакансии в хранилище.
         """
         pass
 
@@ -36,6 +36,9 @@ class VacancySaver(ABC):
 
 
 class JSONSaver(VacancySaver):
+    """
+    Реализация VacancySaver, использующая JSON-файл для хранения вакансий.
+    """
     def __init__(self, filename: str = "vacancies.json"):
         self._filename = Path(filename)
 
@@ -70,26 +73,20 @@ class JSONSaver(VacancySaver):
             json.dump(data, f, ensure_ascii=False, indent=4)
         logger.info(f"Файл {self._filename} успешно сохранён. Всего вакансий: {len(data)}")
 
-    def add(self, vacancy: Vacancy) -> None:
+    def add(self, vacancies: list[Vacancy]) -> None:
         """
-        Добавление вакансии в файл, если её там еще нет (по уникальному url).
+        Добавление вакансии в файл (дубликаты по url не записываются).
         """
         data = self._load_file()
+        have_urls = [v['url'] for v in data]  # Уже сохранённые URL
+        to_save = [v for v in vacancies if v.url not in have_urls]  # Только новые
 
-        # Проверяем наличие вакансии с таким url
-        if not any(v["url"] == vacancy.url for v in data):
-            # Добавляем новую вакансию как словарь
-            data.append({
-                "title": vacancy.title,
-                "url": vacancy.url,
-                "salary": vacancy.salary,
-                "description": vacancy.description
-            })
-            # Сохраняем обновленный список в файл
+        for vacancy in to_save:
+            data.append(vacancy.to_dict())  # Конвертация Vacancy в dict
+
+        if to_save:
             self._save_file(data)
-            logger.info(f"Добавлена вакансия: {vacancy.title}")
-        else:
-            logger.info(f"Вакансия с url {vacancy.url} уже существует. Добавление пропущено.")
+            logger.info(f"Добавлено вакансий: {len(to_save)}")
 
     def get(self, criteria: Dict[str, Any]) -> List[Vacancy]:
         """

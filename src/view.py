@@ -5,7 +5,6 @@ from src.utils import export_to_json, export_to_csv
 def extract_salary(salary_data):
     """
     Извлекает зарплату из словаря зарплаты API.
-    Если нет данных возвращает 0.
     """
     if not salary_data:
         return 0
@@ -43,8 +42,7 @@ def user_interaction(hh_api, saver):
     ) for v in vacancies_data]
 
     # Сохраняем вакансии в файл (без дублирования)
-    for vacancy in vacancies:
-        saver.add(vacancy)
+    saver.add(vacancies)
 
     print(f"Сохранено вакансий: {len(vacancies)}")
 
@@ -75,7 +73,7 @@ def user_interaction(hh_api, saver):
     # Выводим топ-N вакансий
     print(f"\nТоп-{top_n} вакансий по зарплате:")
     for vac in filtered[:top_n]:
-        print(f"Название: {vac.title}\nСсылка: {vac.url}\nЗарплата: {vac.salary}\nОписание: {vac.description}\n{'-'*40}")
+        print(f"{vac}\n{'-'*40}")
 
     # Новый код вопрос о формате экспорта
     export_format = input("В каком формате хотите сохранить вакансии? (json/csv/нет): ").strip().lower()
